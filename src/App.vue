@@ -15,6 +15,7 @@ export default {
     Header,
     Tasks
   },
+  emits: ['delete-task'],
   data() {
     return {
       tasks: [],
@@ -22,7 +23,9 @@ export default {
   },
   methods: {
     deleteTask(id) {
-      console.log('task', id)
+      if(confirm('Are you sure?')) {
+        this.tasks = this.tasks.filter((task) => task.id !== id)
+      }
     }
   },
   created() {

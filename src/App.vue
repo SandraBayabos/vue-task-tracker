@@ -1,7 +1,9 @@
 <template>
   <div class="container">
-    <Header title="Task Tracker" />
-    <AddTask @add-task="addTask"/>
+    <Header @toggle-add-task="toggleAddTask " title="Task Tracker" />
+    <div v-if="showAddTask">
+      <AddTask @add-task="addTask" />
+    </div>
     <Tasks
       @toggle-reminder="toggleReminder"
       @delete-task="deleteTask"
@@ -20,19 +22,23 @@ export default {
   components: {
     Header,
     Tasks,
-    AddTask
+    AddTask,
   },
   emits: ["delete-task"],
   data() {
     return {
       tasks: [],
+      showAddTask: false,
     };
   },
   methods: {
+    toggleAddTask() {
+      this.showAddTask = !this.showAddTask
+    },
     addTask(newTask) {
       // spread the existing tasks & add on the new task
       // that is an object we have emitted from below
-      this.tasks = [...this.tasks, newTask]
+      this.tasks = [...this.tasks, newTask];
     },
     deleteTask(id) {
       if (confirm("Are you sure?")) {

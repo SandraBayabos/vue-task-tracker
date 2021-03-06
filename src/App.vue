@@ -40,14 +40,27 @@ export default {
     toggleAddTask() {
       this.showAddTask = !this.showAddTask;
     },
-    addTask(newTask) {
+    async addTask(newTask) {
+      const res = await fetch("api/tasks", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(newTask),
+      });
+      const data = await res.json();
       // spread the existing tasks & add on the new task
       // that is an object we have emitted from below
-      this.tasks = [...this.tasks, newTask];
+      this.tasks = [...this.tasks, data];
     },
-    deleteTask(id) {
+    async deleteTask(id) {
       if (confirm("Are you sure?")) {
-        this.tasks = this.tasks.filter((task) => task.id !== id);
+        const res = await fetch(`api/tasks/${id}`, {
+          method: "DELETE",
+        });
+        res.status === 200
+          ? (this.tasks = this.tasks.filter((task) => task.id !== id))
+          : alert("Error deleting task!");
       }
     },
     toggleReminder(id) {
@@ -55,28 +68,43 @@ export default {
         task.id === id ? { ...task, reminder: !task.reminder } : task
       );
     },
+    async fetchTasks() {
+      const res = await fetch("api/tasks");
+
+      const data = await res.json();
+
+      return data;
+    },
+    async fetchTask(id) {
+      const res = await fetch(`api/tasks/${id}`);
+
+      const data = await res.json();
+
+      return data;
+    },
   },
-  created() {
-    this.tasks = [
-      {
-        id: 1,
-        text: "Water Plants",
-        day: "March 5th at 2:30pm",
-        reminder: true,
-      },
-      {
-        id: 2,
-        text: "See BeiBei",
-        day: "March 5th at 5:30pm",
-        reminder: false,
-      },
-      {
-        id: 3,
-        text: "Watch Gintama",
-        day: "March 5th at 9:30pm",
-        reminder: true,
-      },
-    ];
+  async created() {
+    this.tasks = await this.fetchTasks();
+    // this.tasks = [
+    //   {
+    //     id: 1,
+    //     text: "Water Plants",
+    //     day: "March 5th at 2:30pm",
+    //     reminder: true,
+    //   },
+    //   {
+    //     id: 2,
+    //     text: "See BeiBei",
+    //     day: "March 5th at 5:30pm",
+    //     reminder: false,
+    //   },
+    //   {
+    //     id: 3,
+    //     text: "Watch Gintama",
+    //     day: "March 5th at 9:30pm",
+    //     reminder: true,
+    //   },
+    // ];
   },
 };
 </script>

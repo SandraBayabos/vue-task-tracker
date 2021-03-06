@@ -1,7 +1,12 @@
 <template>
   <div class="container">
-    <Header @toggle-add-task="toggleAddTask " title="Task Tracker" />
-    <div v-if="showAddTask">
+    <Header
+      @toggle-add-task="toggleAddTask"
+      title="Task Tracker"
+      :showAddTask="showAddTask"
+    />
+    <!-- <router-view :showAddTask="showAddTask"></router-view> -->
+    <div v-show="showAddTask">
       <AddTask @add-task="addTask" />
     </div>
     <Tasks
@@ -33,7 +38,7 @@ export default {
   },
   methods: {
     toggleAddTask() {
-      this.showAddTask = !this.showAddTask
+      this.showAddTask = !this.showAddTask;
     },
     addTask(newTask) {
       // spread the existing tasks & add on the new task
